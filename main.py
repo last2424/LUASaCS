@@ -3,6 +3,7 @@ from tabnanny import check
 from fastapi import FastAPI
 from email_validator import validate_email, EmailNotValidError
 from db import *
+from app.models.users import *
 
 app = FastAPI()
 
@@ -14,7 +15,12 @@ app = FastAPI()
 #	return wrapped
 
 @app.get("/")
-def read_root():
+async def read_root():
+    return {"Hello": "World"}
+
+@app.get("/install")
+async def install():
+    await create_db_and_tables()
     return {"Hello": "World"}
 
 @app.post("/auth")
