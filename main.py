@@ -1,11 +1,19 @@
 import phonenumbers, psycopg2, bcrypt
 from tabnanny import check
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, Request, Response
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from email_validator import validate_email, EmailNotValidError
-from db import *
-from app.models.users import *
+from app.core.db import *
+from app.core.auth import *
+from app.models.sqlmodels import *
 
 app = FastAPI()
+
+app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
+
+templates = Jinja2Templates(directory="app/templates")
 
 #async def login_required(f):
 #	def wrapped(*args, **kwargs):
@@ -15,8 +23,9 @@ app = FastAPI()
 #	return wrapped
 
 @app.get("/")
-async def read_root():
-    return {"Hello": "World"}
+async def read_root(request: Request, response: Response):
+    response.headers["Cache-Control"] = "no-cache"
+    return templates.TemplateResponse("main.html", {"request": request})
 
 @app.get("/install")
 async def install():
@@ -24,9 +33,13 @@ async def install():
     return {"Hello": "World"}
 
 @app.post("/auth")
-async def auth(login: str, password: str):
-    auth_data = {"type": "username", "status": -1}
-    print(login)
+async def auth(login: str, password: str, request: Request, user_agent: Union[str, None] = Header(default=None)):
+    auth_data = {"type": "username", "status": -1, "user_agent": user_agent, "ip": request.client.host}
+    
+    if len(login) == 0 or len(password) == 0:
+        auth_data["status"] = 1
+        return auth_data
+    
     email_validation = await check_email(login)
     phone_validation = await check_phone(login)
     
@@ -37,12 +50,11 @@ async def auth(login: str, password: str):
         auth_data["type"] = "phone"
 
     try:
-        data = fetch_one(psycopg2, "users", auth_data["type"], login)
-
-        if data and len(data) > 0:
-            if check_password(password, data[4]):
+        user = await get_user(login)
+        if user and len(user) > 0:
+            if hash_password(password, data[4]):
                 auth_data["status"] == 0
-                auth_data["auth_token"] = "none"
+                auth_data["auth_token"] = create_refresh_token(user.email, request.client.host, user_agent)
     except Exception as e:
         auth_data["status"] == 9
 
@@ -59,6 +71,3 @@ async def check_phone(phone: str):
         return phonenumbers.parse(phone, "RU")
     except:
         return False
-
-async def check_password(plain_text_password, hashed_password):
-    return bcrypt.checkpw(plain_text_password.encode('utf8'), hashed_password.encode('utf8'))

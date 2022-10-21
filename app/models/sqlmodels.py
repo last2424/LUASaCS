@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select, or_
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -20,3 +20,9 @@ async def create_user(user: User):
         session.add(user)
         await session.commit()
         await session.refresh(user)
+
+async def get_user(login: str):
+    with Session(engine) as session:
+        statement = select(User).where(or_(User.username == login, User.email == login, User.phone == login))
+        user = session.exec(statement).first()
+        return user

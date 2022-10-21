@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Авторизация</title>
+        <link rel="stylesheet" href="{{ url_for('static', path='/styles/auth.css') }}" />
+    </head>
+    <body>
+        <main class="auth-wrapper">
+            <div class="auth-title">Авторизация</div>
+            <form method="POST" class="auth-container">
+                <div class="auth-field"><label for="login">Логин / Email / Телефон</label>
+                <input type="text" class="input-field" id="login" /></div>
+                <div class="auth-field"><label for="password">Пароль</label>
+                <input type="password" class="input-field" id="password" /></div>
+            </form>
+        </main>
+    </body>
+</html>

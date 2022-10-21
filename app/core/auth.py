@@ -52,13 +52,13 @@ def create_access_token(email: str, expires_delta: Optional[timedelta] = None) -
     return create_token(data=TokenPayload(sub=email), expires_delta=expires_delta)
 
 
-def create_refresh_token(email: str, expires_delta: Optional[timedelta] = None) -> str:
+def create_refresh_token(email: str, host: str, user_agent: str, expires_delta: Optional[timedelta] = None) -> str:
     """
     Создаём refresh_token, такой же как и access_token, но с более длительным действием.
     """
 
     expires = expires_delta or timedelta(minutes=JWT_REFRESH_TOKEN_EXPIRE_MINUTES or (60 * 24 * 30))
-    return create_token(data=TokenPayload(sub=email), expires_delta=expires)
+    return create_token(data=TokenPayload(sub={"email": email, "host": host, "user_agent": user_agent}), expires_delta=expires)
 
 
 def decode_access_token(token: str) -> Optional[Mapping[str, Union[str, int, float]]]:
