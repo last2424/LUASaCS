@@ -11,7 +11,7 @@ from app.models.sqlmodels import *
 
 app = FastAPI()
 
-app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -23,9 +23,8 @@ templates = Jinja2Templates(directory="app/templates")
 #	return wrapped
 
 @app.get("/")
-async def read_root(request: Request, response: Response):
-    response.headers["Cache-Control"] = "no-cache"
-    return templates.TemplateResponse("main.html", {"request": request})
+async def read_root(request: Request):
+    return templates.TemplateResponse("main.html", headers={"Cache-Control": "no-cache, no-store, must-revalidate"}, context={"request": request})
 
 @app.get("/install")
 async def install():
