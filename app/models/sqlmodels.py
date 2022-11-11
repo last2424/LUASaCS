@@ -18,8 +18,8 @@ async def create_db_and_tables():
 async def create_user(user: User):
     with Session(engine) as session:
         session.add(user)
-        await session.commit()
-        await session.refresh(user)
+        session.commit()
+        session.refresh(user)
 
 async def get_user(login: str):
     with Session(engine) as session:

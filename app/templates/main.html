@@ -4,6 +4,7 @@
         <title>Авторизация</title>
         <meta http-equiv="Cache-Control" content="no-store" />
         <link rel="stylesheet" href="/static/styles/auth.css" />
+        <script src="/static/scripts/cookies.js"></script>
     </head>
     <body>
         <div class="errors">
@@ -28,7 +29,7 @@
             <form method="POST" action="/restore" class="form-container hidden" id="restore-form">
                 <div class="auth-field">
                     <label class="nomination" for="login">Логин / Email / Телефон</label>
-                    <input type="text" name="login" class="input-field" id="login" />
+                    <input type="text" name="login" class="input-field" id="restore-login" />
                 </div>
                 <div class="auth-field">
                     <input type="submit" class="button-field" value="Восстановить" />

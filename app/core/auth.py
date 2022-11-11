@@ -1,3 +1,4 @@
+import json
 from typing import Optional, Mapping, Union
 from datetime import datetime, timedelta
 from fastapi import status, HTTPException
@@ -56,14 +57,15 @@ def create_refresh_token(email: str, host: str, user_agent: str, expires_delta: 
     """
     Создаём refresh_token, такой же как и access_token, но с более длительным действием.
     """
+    data = json.dumps({"email": email, "host": host, "user_agent": user_agent})
 
     expires = expires_delta or timedelta(minutes=JWT_REFRESH_TOKEN_EXPIRE_MINUTES or (60 * 24 * 30))
-    return create_token(data=TokenPayload(sub={"email": email, "host": host, "user_agent": user_agent}), expires_delta=expires)
+    return create_token(data=TokenPayload(sub=data), expires_delta=expires)
 
 
 def decode_access_token(token: str) -> Optional[Mapping[str, Union[str, int, float]]]:
     try:
-        encoded_jwt: Mapping[str, Union[str, int, float]] = jwt.decode(token, str(JWT_SECRET_KEY), algorithms=[JWT_ALGORITHM])
+        encoded_jwt: Mapping[str, Union[str, int, float]] = jwt.decode(str(token), str(JWT_SECRET_KEY), algorithms=[JWT_ALGORITHM])
     except JWTError:
         return None
     return encoded_jwt
