@@ -49,7 +49,7 @@ async def install():
     await create_db_and_tables()
     return {"Hello": "World"}
 
-@app.post("/verify_cookie", dependencies=[Depends(verify_app_key))
+@app.post("/verify_cookie", dependencies=[Depends(verify_app_key)])
 async def verify_cookie_auth(auth_token: str):
     if auth_token:
         data = decode_access_token(str(auth_token))
@@ -57,7 +57,7 @@ async def verify_cookie_auth(auth_token: str):
             return True
     return False
 
-@app.post("/verify_bearer", dependencies=[Depends(verify_app_key))
+@app.post("/verify_bearer", dependencies=[Depends(verify_app_key)])
 async def verify_bearer_auth(auth_token: str = Header()):
     data = decode_access_token(auth_token)
     if data:
