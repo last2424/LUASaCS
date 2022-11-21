@@ -1,0 +1,180 @@
+body {
+    margin: 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: auto 1fr;
+
+    width: 100vw;
+    height: 100%;
+}
+
+.header-wrapper {
+    display: grid;
+    grid-auto-flow: row;
+    
+    width: 100%;
+}
+
+.upper-menu {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 50px;
+    align-items: center;
+
+    width: 100%;
+    height: 75px;
+
+    background: #fff;
+    /* border: 1px dotted red; */
+
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, .5);
+}
+
+.side-menu {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    /* position: absolute; */
+
+    width: 100px;
+    height: 100vh;
+
+    z-index: 4;
+    
+    background: #fff;
+    /* border: 1px solid blue; */
+}
+
+.navigation {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+
+    /* gap: 40px; */
+
+    box-shadow: 5px 0 5px -5px rgba(0, 0, 0, .5);
+
+    width: 100%;
+}
+
+.opened {
+    width: 250px;
+}
+
+.menu-links {
+    display: grid;
+    grid-auto-flow: column;
+    position: relative;
+    gap: 20px;
+}
+
+.menu-item {
+    display: grid;
+    position: relative;
+}
+
+.menu-item-panel {
+    display: none;
+    position: absolute;
+    /* border: 1px solid black; */
+    top: 40px;
+    padding: 10px;
+    border-radius: 10px;
+    background: #fff;
+
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, .5), 5px 0px 5px -5px rgba(0, 0, 0, .5), -5px 0px 5px -5px rgba(0, 0, 0, .5);
+}
+
+.selected {
+    display: grid;
+}
+
+.menu-triplet {
+    display: grid;
+    align-items: center;
+    align-self: center;
+    width: 32px;
+    height: 75px;
+
+    margin-left: 35px;
+
+    cursor: pointer;
+}
+
+.menu-triplet svg {
+    width: 100%;
+    height: 100%;
+}
+
+.width-350 {
+    width: 350px;
+}
+
+.width-200 {
+    width: 200px;
+}
+
+.offset-right {
+    right: 0;
+}
+
+.circle {
+    width: 32px;
+    height: 32px;
+
+    background: url("/static/assets/pic/temp_ava.jpg");
+    background-size: cover;
+
+    border: 1px solid black;
+    border-radius: 30px;
+
+    cursor: pointer;
+}
+
+.profile-link {
+    margin-right: 50px;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+}
+
+.icon.home {
+    background: url("/static/assets/pic/home_icon.png");
+}
+
+.icon.gear {
+    background: url("/static/assets/pic/gear_icon.png");
+}
+
+.icon.cover {
+    background-size: cover;
+}
+
+.side-menu-item {
+    display: grid;
+    padding: 15px 0px 15px 0;
+}
+
+.side-menu-item-btn {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 10px;
+    align-items: center;
+    padding-left: 35px;
+
+    cursor: pointer;
+}
+
+.side-menu .side-menu-item .side-menu-item-btn a {
+    display: none;
+}
+
+.side-menu.opened .side-menu-item .side-menu-item-btn a {
+    display: grid;
+}
+
+.side-selected {
+    background:#d2d2d2;
+}

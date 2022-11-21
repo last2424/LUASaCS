@@ -1,0 +1,60 @@
+<!--Адаптивность-->
+<!--Функциональность-->
+<!--Удобство-->
+
+<!--Красиво-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/static/styles/base.css">
+        {% block title %}{% endblock %}
+    </head>
+    <body>
+        <nav class="side-menu"> 
+            <div class="menu-triplet">
+                <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="96px" height="96px"><path d="M 2 5 L 2 7 L 22 7 L 22 5 L 2 5 z M 2 11 L 2 13 L 22 13 L 22 11 L 2 11 z M 2 17 L 2 19 L 22 19 L 22 17 L 2 17 z"/></svg>
+            </div>
+            <div class="navigation">
+                {% block navigation %}{% endblock %}
+            </div>
+        </nav>
+        <main class="content-wrapper">
+            <nav class="upper-menu">
+                <div class="menu-links">
+                    <div class="menu-item">
+                        <div class="menu-item-btn">
+                            <a href="#" class="hide-on-click">Модули</a>
+                        </div>
+                        <div class="menu-item-panel width-350 hide-on-click">
+                            <a href="#" class="hide-on-click">Нормативно-методическое сопровождение ФГОС</a>
+                        </div>
+                    </div>
+                    <div class="menu-item">
+                            <div class="menu-item-btn">
+                                <a href="#" class="hide-on-click">Методический кабинет</a>
+                            </div>
+                            <div class="menu-item-panel width-200 hide-on-click">
+                                <a href="#" class="hide-on-click">О проекте</a>
+                                <a href="#" class="hide-on-click">Техническая поддержка</a>
+                                <a href="#" class="hide-on-click">Контакты</a>
+                            </div>
+                    </div>
+                </div>
+                <div></div><!--пустой див для заполнения пространства-->
+                <div class="profile-link menu-item">
+                    <div class="menu-item-btn">
+                        <div class="circle hide-on-click"></div>
+                    </div>
+                    <div class="menu-item-panel width-200 offset-right hide-on-click">
+                        <a href="/main">Личный кабинет</a>
+                        <a href="/logout">Выйти</a>
+                    </div>
+                </div>
+            </nav>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <script src="/static/scripts/base.js"></script>
+    </body>
+</html>
