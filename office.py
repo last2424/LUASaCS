@@ -29,10 +29,10 @@ class AuthData(BaseModel):
     redirect: Union[str, None] = "/main"
 
 async def verify_cookie_auth(request: Request):
-    r = requests.post('http://127.0.0.1:5001/verify_cookie', data={'auth_token': request.cookies['auth_token'], 'appuid': appuid, 'app_key': app_secret}, headers=request.headers, cookies=request.cookies)
+    r = requests.post('http://127.0.0.1:5001/verify_cookie', data={'auth_token': request.cookies.get("auth_token"), 'appuid': appuid, 'app_key': app_secret}, headers=request.headers, cookies=request.cookies)
     if r.json():
         return HTTPException(status_code=200)
-    raise HTTPException(status_code=400, detail="Auth Token invalid")
+    return RedirectResponse("/")
 
 
 async def verify_bearer_auth(request: Request):
