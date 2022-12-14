@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Основной кабинет</title>
+{% endblock %}
+
+{% block navigation %}
+<div class="side-menu-item side-selected">
+    <div class="side-menu-item-btn">
+        <div class="icon home cover"></div>
+        <a href="#" class="side-menu-link">Информация</a>
+    </div>
+</div>
+<div class="side-menu-item">
+    <div class="side-menu-item-btn">
+        <div class="icon gear cover"></div>
+        <a href="#" class="side-menu-link">Настройки</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+    <!-- <div class="page-info"></div> -->
+    <!-- <div class="page-settings"></div> -->
+    <!-- <script src="/static/scripts/cabinet.js"></script> -->
+    <iframe src="http://127.0.0.1:8080/files/" class="filebrowser"></iframe>
+{% endblock %}

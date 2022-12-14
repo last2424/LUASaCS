@@ -2,6 +2,7 @@
 
 {% block title %}
     <title>Основной кабинет</title>
+    <link rel="stylesheet" href="/static/styles/cabinet.css">
 {% endblock %}
 
 {% block navigation %}
@@ -20,8 +21,52 @@
 {% endblock %}
 
 {% block content %}
-    <!-- <div class="page-info"></div> -->
-    <!-- <div class="page-settings"></div> -->
-    <!-- <script src="/static/scripts/cabinet.js"></script> -->
-    <iframe src="http://127.0.0.1:8080/files/" class="filebrowser"></iframe>
+    <div class="page-info showed">
+        <div class="user-field">
+            <div class="field-name">Имя пользователя:</div>
+            <div class="field-value">{{ username }}</div>
+        </div>
+        <div class="user-field">
+            <div class="field-name">Email:</div>
+            <div class="field-value">{{ email }}</div>
+        </div>
+        <div class="user-field">
+            <div class="field-name">Телефон:</div>
+            <div class="field-value">{{ phone }}</div>
+        </div>
+        <div class="user-field">
+            <div class="field-name">ФИО:</div>
+            <div class="field-value">{{ lastname }} {{ firstname }} {{ fathername }}</div>
+        </div>
+        <div class="user-field">
+            <div class="field-name">Права:</div>
+            <div class="field-value-rows">
+                {% for permission in permissions %}
+                    <div class="permission">permission.per_local</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="page-settings">
+        <div class="settings-field">
+            <div class="field-name">Смена пароля</div>
+            <div class="field-value">Старый пароль</div>
+            <div class="field-value"><input type="password" name="old_password" disabled/></div>
+            <div class="field-value">Новый пароль</div>
+            <div class="field-value"><input type="password" name="new_password" disabled/></div>
+            <div class="field-value">Повторите пароль</div>
+            <div class="field-value"><input type="password" name="new_password2" disabled/></div>
+        </div>
+        <div class="settings-field">
+            <div class="field-name">Данные о пользователе</div>
+            <div class="field-value">Фамилия</div>
+            <div class="field-value"><input type="text" name="lastname" value="{{ lastname }}" disabled/></div>
+            <div class="field-value">Имя</div>
+            <div class="field-value"><input type="text" name="firstname" value="{{ firstname }}" disabled/></div>
+            <div class="field-value">Отчество</div>
+            <div class="field-value"><input type="text" name="fathername" value="{{ fathername }}"  disabled/></div>
+        </div>
+    </div>
+    <script src="/static/scripts/cabinet.js">
+    </script>
 {% endblock %}

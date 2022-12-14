@@ -1,7 +1,7 @@
 import phonenumbers, psycopg2, bcrypt, secrets
 from tabnanny import check
 from pydantic import BaseModel
-from fastapi import Depends, FastAPI, Header, Request, Response
+from fastapi import Depends, FastAPI, Header, Request, Response, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -24,22 +24,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class AuthData(BaseModel):
-    login: str
-    password: str
-    redirect: Union[str, None] = "/main"
-    user_agent: Union[str, None] = Header(default=None)
-    appuid: str
-    app_key: str
-
 async def verify_superadmin_token(superadmin_token: str):
     if superadmin_token != SUPERADMIN_TOKEN:
         return {"status": "Permissions denied"}
 
-async def verify_app_key(authData: AuthData):
-    custom_app = await get_app(appuid=authData.appuid)
-    v = await verify_app(custom_app.secret_token, authData.app_key)
-    print(v)
+async def verify_app_key(appuid: str = Form(), app_key: str = Form()):
+    custom_app = await get_app(appuid=appuid)
+    v = await verify_app(custom_app.secret_token, app_key)
     if v is False:
         return HTTPException(status_code=400, detail="App key is invalid")
 
@@ -50,9 +41,9 @@ async def install():
     return {"Hello": "World"}
 
 @app.post("/verify_cookie", dependencies=[Depends(verify_app_key)])
-async def verify_cookie_auth(auth_token: str):
-    if auth_token:
-        data = decode_access_token(str(auth_token))
+async def verify_cookie_auth(request: Request):
+    if request.cookies.get("auth_token"):
+        data = decode_access_token(str(request.cookies.get("auth_token")))
         if data:
             return True
     return False
@@ -82,14 +73,14 @@ async def add_app(appname: str, superadmin_token: str):
     return {"status": "ok", "appuid": appuid, "public_key": keys["public_key"]}
 
 @app.post("/auth", dependencies=[Depends(verify_app_key)])
-async def auth(authData: AuthData, request: Request):
-    auth_data = {"type": "username", "status": -1, "user_agent": authData.user_agent, "ip": request.client.host, "redirect": authData.redirect}
-    if len(authData.login) == 0 or len(authData.password) == 0:
+async def auth(request: Request, login: str = Form(), password: str = Form(), redirect: Union[str, None] = "/main", user_agent: Union[str, None] = Header(default=None)):
+    auth_data = {"type": "username", "status": -1, "user_agent": user_agent, "ip": request.client.host, "redirect": redirect}
+    if len(login) == 0 or len(password) == 0:
         auth_data["status"] = 1
         return auth_data
     
-    email_validation = await check_email(authData.login)
-    phone_validation = await check_phone(authData.login)
+    email_validation = await check_email(login)
+    phone_validation = await check_phone(login)
     if email_validation is not False:
         auth_data["type"] = "email"
 
@@ -97,11 +88,11 @@ async def auth(authData: AuthData, request: Request):
         auth_data["type"] = "phone"
 
     try:
-        user = await get_user(authData.login)
+        user = await get_user(login)
         if user:
-            if verify_password(authData.password, user.password):
+            if verify_password(password, user.password):
                 auth_data["status"] = 0
-                auth_data["auth_token"] = create_refresh_token(user.email, request.client.host, authData.user_agent)
+                auth_data["auth_token"] = create_refresh_token(user.email, request.client.host, user_agent)
             else:
                 auth_data["status"] = 7
         else:
@@ -111,6 +102,14 @@ async def auth(authData: AuthData, request: Request):
         auth_data["status"] = 9
 
     return JSONResponse(auth_data)
+
+@app.post("/get_user_by_jwt", dependencies=[Depends(verify_app_key)])
+async def get_user_by_jwt(request: Request):
+    if request.cookies.get("auth_token"):
+        data = decode_access_token(str(request.cookies.get("auth_token")))
+        email = json.loads(data['sub'])['email']
+        user = await get_user(email)
+        return JSONResponse({"id": user.id, "email": user.email, "phone": user.phone, "username": user.username})
 
 async def check_email(email: str):
     try:
